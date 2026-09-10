@@ -30,15 +30,14 @@ type EntryAppendResult struct {
 type EntryJournal struct {
 	config Config
 
-	mu      sync.RWMutex
-	loaded  bool
-	entries map[EntryID]Entry
-	order   []EntryID
+	mu     sync.RWMutex
+	loaded bool
+	index  *entryIndex
 }
 
 // NewEntryJournal stores configuration without performing IO.
 func NewEntryJournal(config Config) *EntryJournal {
-	return &EntryJournal{config: config}
+	return &EntryJournal{config: config, index: newEntryIndex()}
 }
 
 // Load creates Lore-owned entry directories, recovers one pending append, and
@@ -48,8 +47,7 @@ func (journal *EntryJournal) Load(ctx context.Context) error {
 	defer journal.mu.Unlock()
 
 	journal.loaded = false
-	journal.entries = make(map[EntryID]Entry)
-	journal.order = nil
+	journal.index = newEntryIndex()
 
 	if err := ctx.Err(); err != nil {
 		return err
@@ -63,13 +61,12 @@ func (journal *EntryJournal) Load(ctx context.Context) error {
 		return err
 	}
 
-	entries, order, err := rebuildEntryIndex(ctx, journal.config.EntriesRoot)
+	index, err := rebuildEntryIndex(ctx, journal.config.EntriesRoot)
 	if err != nil {
 		return err
 	}
 
-	journal.entries = entries
-	journal.order = order
+	journal.index = index
 	journal.loaded = true
 
 	return nil
@@ -83,7 +80,7 @@ func (journal *EntryJournal) Loaded() bool {
 	return journal.loaded
 }
 
-// Append validates and durably publishes one root knowledge entry.
+// Append validates and durably publishes one knowledge revision.
 func (journal *EntryJournal) Append(ctx context.Context, entry Entry) (EntryAppendResult, error) {
 	journal.mu.Lock()
 	defer journal.mu.Unlock()
@@ -105,12 +102,8 @@ func (journal *EntryJournal) Append(ctx context.Context, entry Entry) (EntryAppe
 		return EntryAppendResult{}, err
 	}
 
-	if canonical.Supersedes != "" {
-		return EntryAppendResult{}, fmt.Errorf("append entry: revision persistence is not available")
-	}
-
-	if _, exists := journal.entries[canonical.ID]; exists {
-		return EntryAppendResult{}, fmt.Errorf("append entry: duplicate entry ID %q", canonical.ID)
+	if err := validateEntryAgainstIndex(canonical, journal.index); err != nil {
+		return EntryAppendResult{}, err
 	}
 
 	line, err := canonicalEntryLine(canonical)
@@ -123,8 +116,7 @@ func (journal *EntryJournal) Append(ctx context.Context, entry Entry) (EntryAppe
 		return EntryAppendResult{}, err
 	}
 
-	journal.entries[canonical.ID] = canonical
-	journal.order = append(journal.order, canonical.ID)
+	addEntryToIndex(canonical, journal.index)
 
 	return EntryAppendResult{Entry: canonical}, nil
 }
@@ -134,7 +126,7 @@ func (journal *EntryJournal) Entry(id EntryID) (Entry, bool) {
 	journal.mu.RLock()
 	defer journal.mu.RUnlock()
 
-	entry, exists := journal.entries[id]
+	entry, exists := journal.index.entries[id]
 
 	return entry, exists
 }
@@ -144,7 +136,59 @@ func (journal *EntryJournal) Count() int {
 	journal.mu.RLock()
 	defer journal.mu.RUnlock()
 
-	return len(journal.entries)
+	return len(journal.index.entries)
+}
+
+// Effective returns the terminal effective revision for any chain member.
+func (journal *EntryJournal) Effective(id EntryID) (Entry, bool) {
+	journal.mu.RLock()
+	defer journal.mu.RUnlock()
+
+	root, exists := journal.index.roots[id]
+	if !exists {
+		return Entry{}, false
+	}
+
+	effectiveID, exists := journal.index.effective[root]
+	if !exists {
+		return Entry{}, false
+	}
+
+	return journal.index.entries[effectiveID], true
+}
+
+// History returns one complete revision chain in oldest-to-newest order.
+func (journal *EntryJournal) History(id EntryID) ([]Entry, bool) {
+	journal.mu.RLock()
+	defer journal.mu.RUnlock()
+
+	root, exists := journal.index.roots[id]
+	if !exists {
+		return nil, false
+	}
+
+	history := make([]Entry, 0)
+	for current := root; current != ""; current = journal.index.successors[current] {
+		history = append(history, journal.index.entries[current])
+	}
+
+	return history, true
+}
+
+// EffectiveEntries returns every terminal revision in recording order.
+func (journal *EntryJournal) EffectiveEntries() []Entry {
+	journal.mu.RLock()
+	defer journal.mu.RUnlock()
+
+	entries := make([]Entry, 0, len(journal.index.effective))
+	for _, id := range journal.index.order {
+		root := journal.index.roots[id]
+		if journal.index.effective[root] == id {
+			entries = append(entries, journal.index.entries[id])
+		}
+	}
+
+	return entries
 }
 
 // EntrySegmentPath returns the canonical monthly entry path for a recording
@@ -161,13 +205,12 @@ func (journal *EntryJournal) recoverForAppend(ctx context.Context) error {
 		return err
 	}
 
-	entries, order, err := rebuildEntryIndex(ctx, journal.config.EntriesRoot)
+	index, err := rebuildEntryIndex(ctx, journal.config.EntriesRoot)
 	if err != nil {
 		return err
 	}
 
-	journal.entries = entries
-	journal.order = order
+	journal.index = index
 
 	return nil
 }
@@ -190,30 +233,28 @@ func prepareEntryDirectories(config Config) error {
 	return nil
 }
 
-func rebuildEntryIndex(ctx context.Context, root string) (map[EntryID]Entry, []EntryID, error) {
+func rebuildEntryIndex(ctx context.Context, root string) (*entryIndex, error) {
 	paths, err := listSegmentPaths(root)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
-	entries := make(map[EntryID]Entry)
-	order := make([]EntryID, 0)
+	index := newEntryIndex()
 
 	for _, segmentPath := range paths {
-		if err := loadEntrySegment(ctx, root, segmentPath, entries, &order); err != nil {
-			return nil, nil, err
+		if err := loadEntrySegment(ctx, root, segmentPath, index); err != nil {
+			return nil, err
 		}
 	}
 
-	return entries, order, nil
+	return index, nil
 }
 
 func loadEntrySegment(
 	ctx context.Context,
 	root string,
 	segmentPath string,
-	entries map[EntryID]Entry,
-	order *[]EntryID,
+	index *entryIndex,
 ) (resultErr error) {
 	file, err := os.Open(segmentPath)
 	if err != nil {
@@ -241,16 +282,11 @@ func loadEntrySegment(
 			return err
 		}
 
-		if _, exists := entries[entry.ID]; exists {
-			return corruptEntrySegment(segmentPath, lineNumber, "duplicate entry ID %q", entry.ID)
+		if err := validateEntryAgainstIndex(entry, index); err != nil {
+			return corruptEntrySegment(segmentPath, lineNumber, "%v", err)
 		}
 
-		if entry.Supersedes != "" {
-			return corruptEntrySegment(segmentPath, lineNumber, "revision persistence is not available")
-		}
-
-		entries[entry.ID] = entry
-		*order = append(*order, entry.ID)
+		addEntryToIndex(entry, index)
 	}
 
 	if err := scanner.Err(); err != nil {
