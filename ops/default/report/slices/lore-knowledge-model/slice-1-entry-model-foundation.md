@@ -1,6 +1,6 @@
 # Slice 1: Entry Model Foundation
 
-Status: ready for merge
+Status: delivered
 
 Delivery set: `lore-knowledge-model`
 
