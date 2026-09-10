@@ -12,7 +12,7 @@ Base branch: `dev`
 
 Active slice: Slice 1
 
-Active tasks: T1.1
+Active tasks: T1.2
 
 Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
@@ -20,7 +20,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Slice | Short Name | Status | Branch | PR Title | PR | Report |
 | --- | --- | --- | --- | --- | --- | --- |
-| Slice 1 | entry model foundation | ready | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | pending | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
+| Slice 1 | entry model foundation | in progress | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | pending | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | blocked | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | pending | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | blocked | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | pending | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
 | Slice 4 | review and pruning | blocked | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
@@ -29,8 +29,8 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Task | Status | Expected Commit | Commit | Validation |
 | --- | --- | --- | --- | --- |
-| T1.1 | ready | `feat(model): define Lore entries` | pending | pending |
-| T1.2 | blocked | `feat(model): validate Lore entries` | pending | pending |
+| T1.1 | completed | `feat(model): define Lore entries` | `8e16b2c` | `make check` and `git diff --check` passed |
+| T1.2 | ready | `feat(model): validate Lore entries` | pending | pending |
 | T1.3 | blocked | `test(model): verify Lore entry contracts` | pending | pending |
 
 ## Slice 2 Tasks
@@ -77,6 +77,9 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 ## Notes
 
 - Slice numbering starts at Slice 1 for this delivery set.
+- Slice 1 started from planning commit `5d16d42`; T1.1 introduced the
+  canonical value contracts as `8e16b2c` without changing persistence or CLI
+  behavior.
 - Slice 1 may coexist temporarily with the inherited activity model but cannot
   change its storage or CLI behavior.
 - Slice 2 may add the new journal beside the inherited journal but cannot
