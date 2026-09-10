@@ -100,6 +100,10 @@ func NewEntryRevision(previous, replacement Entry, id EntryID, recordedAt time.T
 		return Entry{}, fmt.Errorf("revise entry: validate predecessor: %w", err)
 	}
 
+	if recordedAt.Before(previous.RecordedAt) {
+		return Entry{}, fmt.Errorf("revise entry: recorded_at must not precede predecessor")
+	}
+
 	replacement.ID = id
 	replacement.RecordedAt = recordedAt
 	replacement.Supersedes = previous.ID
@@ -183,7 +187,11 @@ func (reference EntryReference) Validate() error {
 		return validateEntryURL(reference.Value)
 	}
 
-	return rejectLocatorCredentials("entry reference value", reference.Value)
+	if reference.Type == EntryReferenceTypeRepository {
+		return rejectLocatorCredentials("entry reference value", reference.Value)
+	}
+
+	return nil
 }
 
 // Validate checks optional entry provenance.
