@@ -14,6 +14,9 @@ type Config struct {
 	JournalRoot           string
 	PendingPath           string
 	VerificationStatePath string
+	DataRoot              string
+	EntriesRoot           string
+	EntryPendingRoot      string
 	RuntimeRoot           string
 	SocketPath            string
 }
@@ -39,6 +42,15 @@ func DefaultConfig() (Config, error) {
 		return Config{}, err
 	}
 
+	dataHome := os.Getenv("XDG_DATA_HOME")
+	if dataHome != "" {
+		if !filepath.IsAbs(dataHome) {
+			return Config{}, fmt.Errorf("resolve Lore data paths: XDG_DATA_HOME must be absolute")
+		}
+
+		config.setDataRoot(filepath.Join(filepath.Clean(dataHome), "lore"))
+	}
+
 	runtimeDirectory := os.Getenv("XDG_RUNTIME_DIR")
 	if runtimeDirectory == "" {
 		return Config{}, fmt.Errorf("resolve Lore runtime paths: XDG_RUNTIME_DIR is required")
@@ -56,13 +68,24 @@ func ConfigFromHome(home string) (Config, error) {
 		return Config{}, fmt.Errorf("resolve configuration: home path must be absolute")
 	}
 
-	filesRoot := filepath.Join(filepath.Clean(home), ".lore")
+	cleanHome := filepath.Clean(home)
+	filesRoot := filepath.Join(cleanHome, ".lore")
+	dataRoot := filepath.Join(cleanHome, ".local", "share", "lore")
 
-	return Config{
-		ConfigRoot:            filepath.Join(filepath.Clean(home), ".config", "lore"),
+	config := Config{
+		ConfigRoot:            filepath.Join(cleanHome, ".config", "lore"),
 		FilesRoot:             filesRoot,
 		JournalRoot:           filepath.Join(filesRoot, "events"),
 		PendingPath:           filepath.Join(filesRoot, "pending.json"),
 		VerificationStatePath: filepath.Join(filesRoot, "verification.json"),
-	}, nil
+	}
+	config.setDataRoot(dataRoot)
+
+	return config, nil
+}
+
+func (config *Config) setDataRoot(root string) {
+	config.DataRoot = root
+	config.EntriesRoot = filepath.Join(root, "entries")
+	config.EntryPendingRoot = filepath.Join(root, "pending")
 }

@@ -23,6 +23,9 @@ func TestConfigFromHome(t *testing.T) {
 				JournalRoot:           filepath.FromSlash("/home/tester/.lore/events"),
 				PendingPath:           filepath.FromSlash("/home/tester/.lore/pending.json"),
 				VerificationStatePath: filepath.FromSlash("/home/tester/.lore/verification.json"),
+				DataRoot:              filepath.FromSlash("/home/tester/.local/share/lore"),
+				EntriesRoot:           filepath.FromSlash("/home/tester/.local/share/lore/entries"),
+				EntryPendingRoot:      filepath.FromSlash("/home/tester/.local/share/lore/pending"),
 			},
 		},
 		{
@@ -60,6 +63,7 @@ func TestDefaultConfigIncludesRuntimeSocket(t *testing.T) {
 	home := t.TempDir()
 	runtimeDirectory := filepath.Join(t.TempDir(), "runtime")
 	t.Setenv("HOME", home)
+	t.Setenv("XDG_DATA_HOME", "")
 	t.Setenv("XDG_RUNTIME_DIR", runtimeDirectory)
 
 	config, err := DefaultConfig()
@@ -71,14 +75,47 @@ func TestDefaultConfigIncludesRuntimeSocket(t *testing.T) {
 		t.Fatalf("FilesRoot = %q", config.FilesRoot)
 	}
 
+	if config.DataRoot != filepath.Join(home, ".local", "share", "lore") {
+		t.Fatalf("DataRoot = %q", config.DataRoot)
+	}
+
 	wantRuntimeRoot := filepath.Join(runtimeDirectory, "lore")
 	if config.RuntimeRoot != wantRuntimeRoot || config.SocketPath != filepath.Join(wantRuntimeRoot, "lore.sock") {
 		t.Fatalf("runtime config = %#v", config)
 	}
 }
 
+func TestDefaultConfigUsesXDGDataHome(t *testing.T) {
+	home := t.TempDir()
+	dataHome := filepath.Join(t.TempDir(), "data")
+	t.Setenv("HOME", home)
+	t.Setenv("XDG_DATA_HOME", dataHome)
+	t.Setenv("XDG_RUNTIME_DIR", filepath.Join(t.TempDir(), "runtime"))
+
+	config, err := DefaultConfig()
+	if err != nil {
+		t.Fatalf("DefaultConfig() error = %v", err)
+	}
+
+	wantRoot := filepath.Join(dataHome, "lore")
+	if config.DataRoot != wantRoot || config.EntriesRoot != filepath.Join(wantRoot, "entries") {
+		t.Fatalf("data config = %#v", config)
+	}
+}
+
+func TestDefaultConfigRejectsRelativeXDGDataHome(t *testing.T) {
+	t.Setenv("HOME", t.TempDir())
+	t.Setenv("XDG_DATA_HOME", "relative/data")
+	t.Setenv("XDG_RUNTIME_DIR", filepath.Join(t.TempDir(), "runtime"))
+
+	if _, err := DefaultConfig(); err == nil {
+		t.Fatal("expected XDG data directory error")
+	}
+}
+
 func TestDefaultConfigRequiresRuntimeDirectory(t *testing.T) {
 	t.Setenv("HOME", t.TempDir())
+	t.Setenv("XDG_DATA_HOME", "")
 	t.Setenv("XDG_RUNTIME_DIR", "")
 
 	if _, err := DefaultConfig(); err == nil {
