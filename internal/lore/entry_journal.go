@@ -250,12 +250,7 @@ func rebuildEntryIndex(ctx context.Context, root string) (*entryIndex, error) {
 	return index, nil
 }
 
-func loadEntrySegment(
-	ctx context.Context,
-	root string,
-	segmentPath string,
-	index *entryIndex,
-) (resultErr error) {
+func loadEntrySegment(ctx context.Context, root, segmentPath string, index *entryIndex) (resultErr error) {
 	file, err := os.Open(segmentPath)
 	if err != nil {
 		return fmt.Errorf("open entry segment %q: %w", segmentPath, err)
