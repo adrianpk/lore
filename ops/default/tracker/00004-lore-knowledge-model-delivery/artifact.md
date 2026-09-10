@@ -20,7 +20,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Slice | Short Name | Status | Branch | PR Title | PR | Report |
 | --- | --- | --- | --- | --- | --- | --- |
-| Slice 1 | entry model foundation | ready for review | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | pending | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
+| Slice 1 | entry model foundation | ready for merge | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | blocked | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | pending | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | blocked | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | pending | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
 | Slice 4 | review and pruning | blocked | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
@@ -84,6 +84,8 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
   chronology and kept file references with `@` valid after focused testing.
 - T1.3 added boundary, normalization, JSON, provenance, reference, and revision
   coverage as `0a704af` and aligned the package and model references.
+- Slice 1 is published as PR `#1`; the forge reports it open, conflict-free,
+  and mergeable against `dev`.
 - Slice 1 may coexist temporarily with the inherited activity model but cannot
   change its storage or CLI behavior.
 - Slice 2 may add the new journal beside the inherited journal but cannot

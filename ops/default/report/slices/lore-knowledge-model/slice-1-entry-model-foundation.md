@@ -1,6 +1,6 @@
 # Slice 1: Entry Model Foundation
 
-Status: ready for review
+Status: ready for merge
 
 Delivery set: `lore-knowledge-model`
 
@@ -10,7 +10,7 @@ Tracker: `ops/default/tracker/00004-lore-knowledge-model-delivery/artifact.md`
 
 Branch: `feat/slice-1-entry-model-foundation`
 
-PR: pending
+PR: `#1`
 
 ## Purpose
 
