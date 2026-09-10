@@ -1,0 +1,88 @@
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - staticcheck
+    - ineffassign
+    - errcheck
+    - whitespace
+    - nlreturn
+    - wsl_v5
+    - cyclop
+    - funlen
+    - gocognit
+    - nestif
+    - bodyclose
+    - nilerr
+    - errorlint
+    - contextcheck
+    - revive
+    - forbidigo
+
+  settings:
+    nlreturn:
+      block-size: 1
+
+    whitespace:
+      multi-if: true
+      multi-func: false
+
+    wsl_v5:
+      allow-first-in-block: true
+      allow-whole-block: false
+      branch-max-lines: 2
+      enable:
+        - assign-expr
+
+    cyclop:
+      max-complexity: 10
+
+    funlen:
+      lines: 60
+      statements: 40
+
+    gocognit:
+      min-complexity: 15
+
+    nestif:
+      min-complexity: 3
+
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+
+    forbidigo:
+      forbid:
+        - pattern: fmt.Print.*
+
+    revive:
+      rules:
+        - name: exported
+        - name: package-comments
+        - name: indent-error-flow
+        - name: superfluous-else
+        - name: var-declaration
+        - name: early-return
+
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+    - gci
+  settings:
+    gofumpt:
+      extra-rules: true
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(forge.adrianpk.com/adrianpk/lore)
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0

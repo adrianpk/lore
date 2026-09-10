@@ -1,0 +1,12 @@
+[Unit]
+Description=Verify the Lore local chronicle
+Requires=lore.socket
+After=lore.socket
+
+[Service]
+Type=oneshot
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin
+ExecStart=/usr/bin/env lore verify --scheduled
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes

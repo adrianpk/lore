@@ -1,0 +1,13 @@
+[Unit]
+Description=Lore local chronicle service
+Requires=lore.socket
+After=lore.socket
+
+[Service]
+Type=simple
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin
+ExecStart=/usr/bin/env lore serve
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+TimeoutStopSec=10s

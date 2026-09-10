@@ -1,0 +1,68 @@
+// Package lore implements the local Lore journal and its domain contracts.
+package lore
+
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+)
+
+// Config contains the user-local paths owned by Lore.
+type Config struct {
+	ConfigRoot            string
+	FilesRoot             string
+	JournalRoot           string
+	PendingPath           string
+	VerificationStatePath string
+	RuntimeRoot           string
+	SocketPath            string
+}
+
+// DefaultConfigForCommand skips service paths for the offline migrator.
+func DefaultConfigForCommand(command string) (Config, error) {
+	if command == "migrate" {
+		return Config{}, nil
+	}
+
+	return DefaultConfig()
+}
+
+// DefaultConfig resolves Lore paths from the current process environment.
+func DefaultConfig() (Config, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return Config{}, fmt.Errorf("resolve user home: %w", err)
+	}
+
+	config, err := ConfigFromHome(home)
+	if err != nil {
+		return Config{}, err
+	}
+
+	runtimeDirectory := os.Getenv("XDG_RUNTIME_DIR")
+	if runtimeDirectory == "" {
+		return Config{}, fmt.Errorf("resolve Lore runtime paths: XDG_RUNTIME_DIR is required")
+	}
+
+	config.RuntimeRoot = filepath.Join(filepath.Clean(runtimeDirectory), "lore")
+	config.SocketPath = filepath.Join(config.RuntimeRoot, "lore.sock")
+
+	return config, nil
+}
+
+// ConfigFromHome resolves Lore paths for a user home directory.
+func ConfigFromHome(home string) (Config, error) {
+	if !filepath.IsAbs(home) {
+		return Config{}, fmt.Errorf("resolve configuration: home path must be absolute")
+	}
+
+	filesRoot := filepath.Join(filepath.Clean(home), ".lore")
+
+	return Config{
+		ConfigRoot:            filepath.Join(filepath.Clean(home), ".config", "lore"),
+		FilesRoot:             filesRoot,
+		JournalRoot:           filepath.Join(filesRoot, "events"),
+		PendingPath:           filepath.Join(filesRoot, "pending.json"),
+		VerificationStatePath: filepath.Join(filesRoot, "verification.json"),
+	}, nil
+}

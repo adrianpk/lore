@@ -1,0 +1,14 @@
+[Unit]
+Description=Lore local chronicle socket
+
+[Socket]
+ListenStream=%t/lore/lore.sock
+Accept=no
+FileDescriptorName=lore
+SocketMode=0600
+DirectoryMode=0700
+RemoveOnStop=yes
+Service=lore.service
+
+[Install]
+WantedBy=sockets.target
