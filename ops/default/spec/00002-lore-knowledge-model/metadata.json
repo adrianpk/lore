@@ -1,0 +1,29 @@
+{
+  "schema_version": "ops-layout/v1",
+  "id": "00002-lore-knowledge-model",
+  "type": "spec",
+  "namespace": "default",
+  "title": "Lore Knowledge Model",
+  "status": "approved",
+  "revision": 1,
+  "created_at": "2026-09-10T21:19:39Z",
+  "updated_at": "2026-09-10T21:19:39Z",
+  "producer": {
+    "name": "codex",
+    "version": "1"
+  },
+  "external_ids": [],
+  "sources": [
+    {
+      "namespace": "default",
+      "type": "quiz",
+      "id": "00001-lore-knowledge-model",
+      "relation": "informed_by"
+    }
+  ],
+  "continuations": [],
+  "files": [
+    "artifact.md",
+    "files/model.md"
+  ]
+}

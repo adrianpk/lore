@@ -5,16 +5,23 @@
   "namespace": "default",
   "title": "Lore knowledge model",
   "status": "curated",
-  "revision": 1,
+  "revision": 2,
   "created_at": "2026-09-10T21:09:44Z",
-  "updated_at": "2026-09-10T21:09:44Z",
+  "updated_at": "2026-09-10T21:19:39Z",
   "producer": {
     "name": "codex",
     "version": "1"
   },
   "external_ids": [],
   "sources": [],
-  "continuations": [],
+  "continuations": [
+    {
+      "namespace": "default",
+      "type": "spec",
+      "id": "00002-lore-knowledge-model",
+      "relation": "continued_by"
+    }
+  ],
   "files": [
     "artifact.md",
     "files/raw.md"
