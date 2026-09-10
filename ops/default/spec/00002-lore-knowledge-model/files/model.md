@@ -170,3 +170,11 @@ Human list output contains `id`, `kind`, `status`, `title`, `recorded_at`, and
 compact context names. JSON output returns complete effective entries unless a
 documented projection flag is selected. Query limits apply before rendering
 and never silently exceed 200 entries.
+
+## Go Ownership
+
+`internal/lore/entry.go` owns the canonical value types and JSON field names.
+`internal/lore/entry_validation.go` owns canonical-name normalization, local
+entry validation, and complete revision construction. Persistence validates
+chain-wide facts such as effective-head ownership, forks, cycles, and missing
+predecessors before accepting a revision.
