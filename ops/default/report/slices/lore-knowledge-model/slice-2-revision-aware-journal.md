@@ -1,6 +1,6 @@
 # Slice 2: Revision-Aware Journal
 
-Status: ready for review
+Status: ready for merge
 
 Delivery set: `lore-knowledge-model`
 
@@ -10,7 +10,7 @@ Tracker: `ops/default/tracker/00004-lore-knowledge-model-delivery/artifact.md`
 
 Branch: `feat/slice-2-revision-aware-journal`
 
-PR: pending
+PR: `#2`
 
 ## Purpose
 

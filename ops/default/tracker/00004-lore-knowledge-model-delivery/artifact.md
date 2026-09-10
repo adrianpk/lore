@@ -21,7 +21,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | Slice | Short Name | Status | Branch | PR Title | PR | Report |
 | --- | --- | --- | --- | --- | --- | --- |
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
-| Slice 2 | revision-aware journal | ready for review | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | pending | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
+| Slice 2 | revision-aware journal | ready for merge | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | `#2` | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | blocked | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | pending | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
 | Slice 4 | review and pruning | blocked | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
@@ -89,6 +89,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
   `4d22d87`.
 - Slice 2 starts from closure commit `d0913ac` and adds the new knowledge store
   without changing the inherited activity CLI or journal.
+- Slice 2 is published as conflict-free PR `#2` against `dev`.
 - Slice 1 may coexist temporarily with the inherited activity model but cannot
   change its storage or CLI behavior.
 - Slice 2 may add the new journal beside the inherited journal but cannot
