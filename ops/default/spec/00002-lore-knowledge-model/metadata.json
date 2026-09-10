@@ -5,9 +5,9 @@
   "namespace": "default",
   "title": "Lore Knowledge Model",
   "status": "approved",
-  "revision": 1,
+  "revision": 2,
   "created_at": "2026-09-10T21:19:39Z",
-  "updated_at": "2026-09-10T21:19:39Z",
+  "updated_at": "2026-09-10T21:23:27Z",
   "producer": {
     "name": "codex",
     "version": "1"
@@ -21,7 +21,20 @@
       "relation": "informed_by"
     }
   ],
-  "continuations": [],
+  "continuations": [
+    {
+      "namespace": "default",
+      "type": "plan",
+      "id": "00003-lore-knowledge-model-delivery",
+      "relation": "planned_by"
+    },
+    {
+      "namespace": "default",
+      "type": "tracker",
+      "id": "00004-lore-knowledge-model-delivery",
+      "relation": "tracked_by"
+    }
+  ],
   "files": [
     "artifact.md",
     "files/model.md"

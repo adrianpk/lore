@@ -1,0 +1,35 @@
+{
+  "schema_version": "ops-layout/v1",
+  "id": "00003-lore-knowledge-model-delivery",
+  "type": "plan",
+  "namespace": "default",
+  "title": "Lore Knowledge Model Delivery Plan",
+  "status": "approved",
+  "revision": 1,
+  "created_at": "2026-09-10T21:23:27Z",
+  "updated_at": "2026-09-10T21:23:27Z",
+  "producer": {
+    "name": "codex",
+    "version": "1"
+  },
+  "external_ids": [],
+  "sources": [
+    {
+      "namespace": "default",
+      "type": "spec",
+      "id": "00002-lore-knowledge-model",
+      "relation": "implements"
+    }
+  ],
+  "continuations": [
+    {
+      "namespace": "default",
+      "type": "tracker",
+      "id": "00004-lore-knowledge-model-delivery",
+      "relation": "tracked_by"
+    }
+  ],
+  "files": [
+    "artifact.md"
+  ]
+}
