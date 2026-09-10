@@ -118,7 +118,7 @@ func (journal *EntryJournal) Append(ctx context.Context, entry Entry) (EntryAppe
 
 	addEntryToIndex(canonical, journal.index)
 
-	return EntryAppendResult{Entry: canonical}, nil
+	return EntryAppendResult{Entry: cloneEntry(canonical)}, nil
 }
 
 // Entry returns one raw entry revision by ID.
@@ -128,7 +128,7 @@ func (journal *EntryJournal) Entry(id EntryID) (Entry, bool) {
 
 	entry, exists := journal.index.entries[id]
 
-	return entry, exists
+	return cloneEntry(entry), exists
 }
 
 // Count returns the number of canonical entry revisions loaded in memory.
@@ -154,7 +154,7 @@ func (journal *EntryJournal) Effective(id EntryID) (Entry, bool) {
 		return Entry{}, false
 	}
 
-	return journal.index.entries[effectiveID], true
+	return cloneEntry(journal.index.entries[effectiveID]), true
 }
 
 // History returns one complete revision chain in oldest-to-newest order.
@@ -169,7 +169,7 @@ func (journal *EntryJournal) History(id EntryID) ([]Entry, bool) {
 
 	history := make([]Entry, 0)
 	for current := root; current != ""; current = journal.index.successors[current] {
-		history = append(history, journal.index.entries[current])
+		history = append(history, cloneEntry(journal.index.entries[current]))
 	}
 
 	return history, true
@@ -184,7 +184,7 @@ func (journal *EntryJournal) EffectiveEntries() []Entry {
 	for _, id := range journal.index.order {
 		root := journal.index.roots[id]
 		if journal.index.effective[root] == id {
-			entries = append(entries, journal.index.entries[id])
+			entries = append(entries, cloneEntry(journal.index.entries[id]))
 		}
 	}
 
@@ -354,6 +354,24 @@ func canonicalEntryLine(entry Entry) ([]byte, error) {
 	}
 
 	return append(line, '\n'), nil
+}
+
+func cloneEntry(entry Entry) Entry {
+	entry.Contexts = append([]Context(nil), entry.Contexts...)
+	entry.Labels = append([]string(nil), entry.Labels...)
+	entry.References = append([]EntryReference(nil), entry.References...)
+
+	if entry.VerifiedAt != nil {
+		verifiedAt := *entry.VerifiedAt
+		entry.VerifiedAt = &verifiedAt
+	}
+
+	if entry.Provenance != nil {
+		provenance := *entry.Provenance
+		entry.Provenance = &provenance
+	}
+
+	return entry
 }
 
 func corruptEntrySegment(segmentPath string, line int, format string, arguments ...any) error {

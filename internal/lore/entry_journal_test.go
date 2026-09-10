@@ -77,6 +77,42 @@ func TestEntryJournalAppendRequiresLoad(t *testing.T) {
 	}
 }
 
+func TestEntryJournalReadIsolation(t *testing.T) {
+	t.Parallel()
+
+	// Returned entries cannot mutate the disposable in-memory source of truth.
+	journal := loadEntryJournal(t, entryJournalConfig(t))
+	entry := distinctKnowledgeEntry(t, 1)
+
+	result, err := journal.Append(context.Background(), entry)
+	if err != nil {
+		t.Fatalf("Append() error = %v", err)
+	}
+
+	result.Entry.Contexts[0].Name = "changed"
+	result.Entry.Labels[0] = "changed"
+	result.Entry.References[0].Value = "changed"
+	result.Entry.Provenance.Harness = "changed"
+
+	stored, exists := journal.Entry(entry.ID)
+	if !exists {
+		t.Fatal("Entry() did not find stored entry")
+	}
+
+	mutated := stored.Contexts[0].Name == "changed" || stored.Labels[0] == "changed" ||
+		stored.References[0].Value == "changed" || stored.Provenance.Harness == "changed"
+	if mutated {
+		t.Fatalf("stored entry was mutated: %#v", stored)
+	}
+
+	stored.Contexts[0].Name = "changed-again"
+
+	effective, exists := journal.Effective(entry.ID)
+	if !exists || effective.Contexts[0].Name == "changed-again" {
+		t.Fatalf("Effective() leaked caller mutation: %#v, %v", effective, exists)
+	}
+}
+
 func TestEntryJournalMonthlySegments(t *testing.T) {
 	t.Parallel()
 
