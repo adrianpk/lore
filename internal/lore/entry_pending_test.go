@@ -231,11 +231,7 @@ func assertEntryPendingRecovery(t *testing.T, test entryPendingRecoveryCase) {
 	assertEntryFileContent(t, segmentPath, appendBytes)
 }
 
-func prepareTestEntryPending(
-	t *testing.T,
-	config Config,
-	entry Entry,
-) (string, []byte, entryPendingOperation) {
+func prepareTestEntryPending(t *testing.T, config Config, entry Entry) (string, []byte, entryPendingOperation) {
 	t.Helper()
 
 	line, err := canonicalEntryLine(entry)
