@@ -12,7 +12,7 @@ Base branch: `dev`
 
 Active slice: Slice 2
 
-Active tasks: T2.1
+Active tasks: none
 
 Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
@@ -21,7 +21,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | Slice | Short Name | Status | Branch | PR Title | PR | Report |
 | --- | --- | --- | --- | --- | --- | --- |
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
-| Slice 2 | revision-aware journal | ready | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | pending | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
+| Slice 2 | revision-aware journal | ready for review | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | pending | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | blocked | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | pending | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
 | Slice 4 | review and pruning | blocked | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
@@ -37,9 +37,9 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Task | Status | Expected Commit | Commit | Validation |
 | --- | --- | --- | --- | --- |
-| T2.1 | ready | `feat(store): persist Lore entries` | pending | pending |
-| T2.2 | blocked | `feat(store): resolve Lore entry revisions` | pending | pending |
-| T2.3 | blocked | `test(store): verify Lore journal recovery` | pending | pending |
+| T2.1 | completed | `feat(store): persist Lore entries` | `ca2c318` | root append, reload, monthly placement, XDG paths, and focused lint passed |
+| T2.2 | completed | `feat(store): resolve Lore entry revisions` | `f5b73de`, `8f2353e` | effective revision, history, corruption, and read-isolation coverage passed |
+| T2.3 | completed | `test(store): verify Lore journal recovery` | `30b2409`, `0af227e`, `565e96b` | all Slice 2 validation commands passed |
 
 ## Slice 3 Tasks
 
@@ -87,6 +87,8 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 - Slice 1 was published as conflict-free PR `#1` against `dev`.
 - Slice 1 merged through PR `#1`; `dev` contains the verified integrated commit
   `4d22d87`.
+- Slice 2 starts from closure commit `d0913ac` and adds the new knowledge store
+  without changing the inherited activity CLI or journal.
 - Slice 1 may coexist temporarily with the inherited activity model but cannot
   change its storage or CLI behavior.
 - Slice 2 may add the new journal beside the inherited journal but cannot

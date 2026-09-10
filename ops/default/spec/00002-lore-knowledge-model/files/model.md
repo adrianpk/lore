@@ -175,6 +175,11 @@ and never silently exceed 200 entries.
 
 `internal/lore/entry.go` owns the canonical value types and JSON field names.
 `internal/lore/entry_validation.go` owns canonical-name normalization, local
-entry validation, and complete revision construction. Persistence validates
-chain-wide facts such as effective-head ownership, forks, cycles, and missing
-predecessors before accepting a revision.
+entry validation, and complete revision construction.
+
+`internal/lore/entry_journal.go` owns monthly JSONL loading and append,
+`internal/lore/entry_index.go` owns raw and effective revision indexes, and
+`internal/lore/entry_pending.go` owns recoverable append publication.
+Persistence validates chain-wide facts such as effective-head ownership,
+forks, cycles, chronology, kind stability, and missing predecessors before
+accepting a revision.
