@@ -1,6 +1,6 @@
 # Slice 4: Review And Pruning
 
-Status: ready for merge
+Status: delivered
 
 Delivery set: `lore-knowledge-model`
 
@@ -99,5 +99,5 @@ toolchain used to build the installed linter.
   real workflow evaluation.
 - Physical purge is intentionally irreversible after matching confirmation;
   archive and invalidate remain the preferred reversible choices.
-- Delivery-set closure and the canonical cycle report remain pending until the
-  maintainer merges Slice 4 into `dev`.
+- Slice 4 merged through PR `#4`; delivery-set closure is recorded in the
+  canonical cycle report.

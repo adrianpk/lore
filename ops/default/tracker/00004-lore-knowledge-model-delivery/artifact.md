@@ -1,6 +1,6 @@
 # Lore Knowledge Model Delivery Tracker
 
-Status: active
+Status: completed
 
 Delivery set: `lore-knowledge-model`
 
@@ -10,7 +10,7 @@ Spec: `ops/default/spec/00002-lore-knowledge-model/artifact.md`
 
 Base branch: `dev`
 
-Active slice: Slice 4
+Active slice: none
 
 Active tasks: none
 
@@ -23,7 +23,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | delivered | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | `#2` | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | delivered | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | `#3` | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
-| Slice 4 | review and pruning | ready for merge | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | `#4` | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
+| Slice 4 | review and pruning | delivered | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | `#4` | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
 ## Slice 1 Tasks
 
@@ -69,10 +69,10 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 - [x] Slice 1 delivered and merged into `dev`.
 - [x] Slice 2 delivered and merged into `dev`.
 - [x] Slice 3 delivered and merged into `dev`.
-- [ ] Slice 4 delivered and merged into `dev`.
+- [x] Slice 4 delivered and merged into `dev`.
 - [x] Inherited activity domain removed.
 - [x] Global activation remains deferred pending separate authorization.
-- [ ] Canonical cycle report delivered.
+- [x] Canonical cycle report delivered.
 
 ## Notes
 
@@ -113,3 +113,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
   activating a global policy.
 - Slice 4 was published as conflict-free PR `#4` against `dev` after all
   required validation passed.
+- Slice 4 merged through PR `#4`; `dev` contains the verified integrated
+  commit `6e9888b`.
+- The delivery set is complete. Its final report is
+  `ops/default/report/cycles/lore-knowledge-model.md`.
