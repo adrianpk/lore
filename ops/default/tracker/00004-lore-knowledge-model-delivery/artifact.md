@@ -10,9 +10,9 @@ Spec: `ops/default/spec/00002-lore-knowledge-model/artifact.md`
 
 Base branch: `dev`
 
-Active slice: Slice 3
+Active slice: Slice 4
 
-Active tasks: none
+Active tasks: T4.1
 
 Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
@@ -22,8 +22,8 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | --- | --- | --- | --- | --- | --- | --- |
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | delivered | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | `#2` | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
-| Slice 3 | knowledge workflows | ready for merge | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | `#3` | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
-| Slice 4 | review and pruning | blocked | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
+| Slice 3 | knowledge workflows | delivered | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | `#3` | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
+| Slice 4 | review and pruning | ready | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
 ## Slice 1 Tasks
 
@@ -54,7 +54,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Task | Status | Expected Commit | Commit | Validation |
 | --- | --- | --- | --- | --- |
-| T4.1 | blocked | `feat(review): select pruning candidates` | pending | pending |
+| T4.1 | ready | `feat(review): select pruning candidates` | pending | pending |
 | T4.2 | blocked | `feat(store): purge confirmed entry chains` | pending | pending |
 | T4.3 | blocked | `docs(lore): document knowledge workflows` | pending | pending |
 | T4.4 | blocked | `test(acceptance): verify Lore knowledge workflows` | pending | pending |
@@ -68,7 +68,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 - [x] Plan and tracker committed and pushed on `dev`.
 - [x] Slice 1 delivered and merged into `dev`.
 - [x] Slice 2 delivered and merged into `dev`.
-- [ ] Slice 3 delivered and merged into `dev`.
+- [x] Slice 3 delivered and merged into `dev`.
 - [ ] Slice 4 delivered and merged into `dev`.
 - [x] Inherited activity domain removed.
 - [ ] Global activation remains deferred pending separate authorization.
@@ -102,5 +102,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
   and inherited-domain removal are not independently buildable without
   exposing incompatible product contracts.
 - Slice 3 was published as conflict-free PR `#3` against `dev`.
+- Slice 3 merged through PR `#3`; `dev` contains the verified integrated
+  commit `9a24e75`.
 - Slice 4 completes pruning and documentation; global agent configuration is
   not part of that documentation change.

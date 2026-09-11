@@ -1,6 +1,6 @@
 # Slice 3: Knowledge Workflows
 
-Status: ready for merge
+Status: delivered
 
 Delivery set: `lore-knowledge-model`
 
