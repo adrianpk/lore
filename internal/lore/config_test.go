@@ -18,14 +18,10 @@ func TestConfigFromHome(t *testing.T) {
 			name: "user paths",
 			home: "/home/tester",
 			want: Config{
-				ConfigRoot:            filepath.FromSlash("/home/tester/.config/lore"),
-				FilesRoot:             filepath.FromSlash("/home/tester/.lore"),
-				JournalRoot:           filepath.FromSlash("/home/tester/.lore/events"),
-				PendingPath:           filepath.FromSlash("/home/tester/.lore/pending.json"),
-				VerificationStatePath: filepath.FromSlash("/home/tester/.lore/verification.json"),
-				DataRoot:              filepath.FromSlash("/home/tester/.local/share/lore"),
-				EntriesRoot:           filepath.FromSlash("/home/tester/.local/share/lore/entries"),
-				EntryPendingRoot:      filepath.FromSlash("/home/tester/.local/share/lore/pending"),
+				ConfigRoot:       filepath.FromSlash("/home/tester/.config/lore"),
+				DataRoot:         filepath.FromSlash("/home/tester/.local/share/lore"),
+				EntriesRoot:      filepath.FromSlash("/home/tester/.local/share/lore/entries"),
+				EntryPendingRoot: filepath.FromSlash("/home/tester/.local/share/lore/pending"),
 			},
 		},
 		{
@@ -69,10 +65,6 @@ func TestDefaultConfigIncludesRuntimeSocket(t *testing.T) {
 	config, err := DefaultConfig()
 	if err != nil {
 		t.Fatalf("DefaultConfig() error = %v", err)
-	}
-
-	if config.FilesRoot != filepath.Join(home, ".lore") {
-		t.Fatalf("FilesRoot = %q", config.FilesRoot)
 	}
 
 	if config.DataRoot != filepath.Join(home, ".local", "share", "lore") {
@@ -120,14 +112,5 @@ func TestDefaultConfigRequiresRuntimeDirectory(t *testing.T) {
 
 	if _, err := DefaultConfig(); err == nil {
 		t.Fatal("expected runtime directory error")
-	}
-}
-
-func TestDefaultConfigForMigrationDoesNotRequireRuntimeDirectory(t *testing.T) {
-	t.Setenv("XDG_RUNTIME_DIR", "")
-
-	config, err := DefaultConfigForCommand("migrate")
-	if err != nil || config != (Config{}) {
-		t.Fatalf("DefaultConfigForCommand() = %#v, %v", config, err)
 	}
 }

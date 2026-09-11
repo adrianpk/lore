@@ -7,126 +7,132 @@ import (
 	"errors"
 )
 
-// Service dispatches validated protocol operations to application workflows.
+// VerifyEntriesParams configures one non-mutating journal verification.
+type VerifyEntriesParams struct {
+	Scheduled bool `json:"scheduled,omitempty"`
+}
+
+// VerifyEntriesResult reports the indexed revision and effective-entry counts.
+type VerifyEntriesResult struct {
+	RevisionCount  int `json:"revision_count"`
+	EffectiveCount int `json:"effective_count"`
+}
+
+// Service dispatches validated protocol operations to knowledge workflows.
 type Service struct {
-	recorder  *Recorder
-	journal   *Journal
-	corrector *Corrector
-	verifier  *Verifier
+	journal   *EntryJournal
+	workflows *EntryWorkflows
 }
 
 // NewService constructs a service without performing IO.
-func NewService(recorder *Recorder) *Service {
-	return &Service{
-		recorder:  recorder,
-		journal:   recorder.journal,
-		corrector: NewCorrector(recorder.journal),
-		verifier:  NewVerifier(recorder.journal),
-	}
+func NewService(journal *EntryJournal) *Service {
+	return &Service{journal: journal, workflows: NewEntryWorkflows(journal)}
 }
 
 // Handle executes one local service request.
 func (service *Service) Handle(ctx context.Context, request Request) Response {
 	switch request.Operation {
-	case "correct":
-		return service.handleCorrect(ctx, request.Params)
+	case "archive":
+		return service.handleLifecycle(ctx, request.Params, EntryStatusArchived)
+	case "invalidate":
+		return service.handleLifecycle(ctx, request.Params, EntryStatusInvalidated)
 	case "record":
 		return service.handleRecord(ctx, request.Params)
-	case "report":
-		return service.handleReport(ctx, request.Params)
+	case "restore":
+		return service.handleLifecycle(ctx, request.Params, EntryStatusActive)
+	case "revise":
+		return service.handleRevise(ctx, request.Params)
 	case "search":
-		return service.handleSearch(ctx, request.Params)
+		return service.handleSearch(request.Params)
 	case "show":
-		return service.handleShow(ctx, request.Params)
+		return service.handleShow(request.Params)
 	case "verify":
-		return service.handleVerify(ctx, request.Params)
+		return service.handleVerify(request.Params)
 	default:
 		return ErrorResponse(ErrorUnknownOperation, "unknown operation")
 	}
 }
 
 func (service *Service) handleRecord(ctx context.Context, encoded json.RawMessage) Response {
-	var params RecordParams
+	var params RecordEntryParams
 	if err := decodeOperationParams(encoded, &params); err != nil {
 		return ErrorResponse(ErrorInvalidRequest, "decode record params")
 	}
 
-	result, err := service.recorder.Record(ctx, params)
+	result, err := service.workflows.Record(ctx, params)
 	if err != nil {
-		return recordErrorResponse(err)
+		return entryErrorResponse(err)
 	}
 
 	return SuccessResponse(result)
 }
 
-func (service *Service) handleSearch(ctx context.Context, encoded json.RawMessage) Response {
-	var query Query
-	if err := decodeOperationParams(encoded, &query); err != nil {
+func (service *Service) handleRevise(ctx context.Context, encoded json.RawMessage) Response {
+	var params ReviseEntryParams
+	if err := decodeOperationParams(encoded, &params); err != nil {
+		return ErrorResponse(ErrorInvalidRequest, "decode revise params")
+	}
+
+	result, err := service.workflows.Revise(ctx, params)
+	if err != nil {
+		return entryErrorResponse(err)
+	}
+
+	return SuccessResponse(result)
+}
+
+func (service *Service) handleLifecycle(ctx context.Context, encoded json.RawMessage, status EntryStatus) Response {
+	var params LifecycleEntryParams
+	if err := decodeOperationParams(encoded, &params); err != nil {
+		return ErrorResponse(ErrorInvalidRequest, "decode lifecycle params")
+	}
+
+	result, err := service.workflows.ChangeStatus(ctx, params, status)
+	if err != nil {
+		return entryErrorResponse(err)
+	}
+
+	return SuccessResponse(result)
+}
+
+func (service *Service) handleSearch(encoded json.RawMessage) Response {
+	var params SearchEntriesParams
+	if err := decodeOperationParams(encoded, &params); err != nil {
 		return ErrorResponse(ErrorInvalidRequest, "decode search params")
 	}
 
-	result, err := service.journal.Search(ctx, query)
+	result, err := service.journal.SearchEntries(params)
 	if err != nil {
-		return retrievalErrorResponse(err)
+		return entryErrorResponse(err)
 	}
 
 	return SuccessResponse(result)
 }
 
-func (service *Service) handleReport(ctx context.Context, encoded json.RawMessage) Response {
-	var params ReportParams
-	if err := decodeOperationParams(encoded, &params); err != nil {
-		return ErrorResponse(ErrorInvalidRequest, "decode report params")
-	}
-
-	result, err := service.journal.Report(ctx, params)
-	if err != nil {
-		return retrievalErrorResponse(err)
-	}
-
-	return SuccessResponse(result)
-}
-
-func (service *Service) handleShow(ctx context.Context, encoded json.RawMessage) Response {
-	var params ShowParams
+func (service *Service) handleShow(encoded json.RawMessage) Response {
+	var params ShowEntryParams
 	if err := decodeOperationParams(encoded, &params); err != nil {
 		return ErrorResponse(ErrorInvalidRequest, "decode show params")
 	}
 
-	result, err := service.journal.Show(ctx, params)
+	result, err := service.journal.ShowEntry(params)
 	if err != nil {
-		return retrievalErrorResponse(err)
+		return entryErrorResponse(err)
 	}
 
 	return SuccessResponse(result)
 }
 
-func (service *Service) handleCorrect(ctx context.Context, encoded json.RawMessage) Response {
-	var params CorrectParams
-	if err := decodeOperationParams(encoded, &params); err != nil {
-		return ErrorResponse(ErrorInvalidRequest, "decode correct params")
-	}
-
-	result, err := service.corrector.Correct(ctx, params)
-	if err != nil {
-		return correctionErrorResponse(err)
-	}
-
-	return SuccessResponse(result)
-}
-
-func (service *Service) handleVerify(ctx context.Context, encoded json.RawMessage) Response {
-	var params VerifyParams
+func (service *Service) handleVerify(encoded json.RawMessage) Response {
+	var params VerifyEntriesParams
 	if err := decodeOperationParams(encoded, &params); err != nil {
 		return ErrorResponse(ErrorInvalidRequest, "decode verify params")
 	}
 
-	result, err := service.verifier.Verify(ctx, params)
-	if err != nil {
-		return verificationErrorResponse(err)
-	}
-
-	return SuccessResponse(result)
+	return SuccessResponse(VerifyEntriesResult{
+		RevisionCount:  service.journal.Count(),
+		EffectiveCount: len(service.journal.EffectiveEntries()),
+	})
 }
 
 func decodeOperationParams(encoded json.RawMessage, target any) error {
@@ -140,52 +146,18 @@ func decodeOperationParams(encoded json.RawMessage, target any) error {
 	return requireJSONEnd(decoder)
 }
 
-func recordErrorResponse(err error) Response {
+func entryErrorResponse(err error) Response {
 	switch {
-	case errors.Is(err, ErrEventInvalid):
-		return ErrorResponse(ErrorInvalidEvent, err.Error())
-	case errors.Is(err, ErrJournalCorrupt):
+	case errors.Is(err, ErrEntryNotFound):
+		return ErrorResponse(ErrorNotFound, err.Error())
+	case errors.Is(err, ErrEntryTargetStale), errors.Is(err, ErrEntryRevisionTargetMissing),
+		errors.Is(err, ErrEntryRevisionTargetStale):
+		return ErrorResponse(ErrorInvalidEntry, err.Error())
+	case errors.Is(err, ErrEntryJournalCorrupt):
 		return ErrorResponse(ErrorJournalCorrupt, err.Error())
-	case errors.Is(err, ErrJournalNotLoaded):
+	case errors.Is(err, ErrEntryJournalNotLoaded):
 		return ErrorResponse(ErrorJournalUnavailable, "journal is unavailable")
 	default:
-		return ErrorResponse(ErrorJournalUnavailable, "journal operation failed")
-	}
-}
-
-func retrievalErrorResponse(err error) Response {
-	switch {
-	case errors.Is(err, ErrQueryInvalid), errors.Is(err, ErrCommitAmbiguous), errors.Is(err, ErrReportInvalid):
 		return ErrorResponse(ErrorInvalidRequest, err.Error())
-	case errors.Is(err, ErrEventNotFound):
-		return ErrorResponse(ErrorNotFound, err.Error())
-	case errors.Is(err, ErrJournalCorrupt):
-		return ErrorResponse(ErrorJournalCorrupt, err.Error())
-	case errors.Is(err, ErrJournalNotLoaded):
-		return ErrorResponse(ErrorJournalUnavailable, "journal is unavailable")
-	default:
-		return ErrorResponse(ErrorJournalUnavailable, "journal operation failed")
-	}
-}
-
-func correctionErrorResponse(err error) Response {
-	switch {
-	case errors.Is(err, ErrCorrectionTargetNotFound):
-		return ErrorResponse(ErrorNotFound, err.Error())
-	case errors.Is(err, ErrEventInvalid), errors.Is(err, ErrCorrectionTargetStale):
-		return ErrorResponse(ErrorInvalidEvent, err.Error())
-	default:
-		return recordErrorResponse(err)
-	}
-}
-
-func verificationErrorResponse(err error) Response {
-	switch {
-	case errors.Is(err, ErrJournalCorrupt):
-		return ErrorResponse(ErrorJournalCorrupt, err.Error())
-	case errors.Is(err, ErrJournalNotLoaded):
-		return ErrorResponse(ErrorJournalUnavailable, "journal is unavailable")
-	default:
-		return ErrorResponse(ErrorJournalUnavailable, "journal verification failed")
 	}
 }

@@ -9,24 +9,16 @@ import (
 
 // Config contains the user-local paths owned by Lore.
 type Config struct {
-	ConfigRoot            string
-	FilesRoot             string
-	JournalRoot           string
-	PendingPath           string
-	VerificationStatePath string
-	DataRoot              string
-	EntriesRoot           string
-	EntryPendingRoot      string
-	RuntimeRoot           string
-	SocketPath            string
+	ConfigRoot       string
+	DataRoot         string
+	EntriesRoot      string
+	EntryPendingRoot string
+	RuntimeRoot      string
+	SocketPath       string
 }
 
-// DefaultConfigForCommand skips service paths for the offline migrator.
-func DefaultConfigForCommand(command string) (Config, error) {
-	if command == "migrate" {
-		return Config{}, nil
-	}
-
+// DefaultConfigForCommand resolves Lore paths for one command.
+func DefaultConfigForCommand(_ string) (Config, error) {
 	return DefaultConfig()
 }
 
@@ -69,15 +61,10 @@ func ConfigFromHome(home string) (Config, error) {
 	}
 
 	cleanHome := filepath.Clean(home)
-	filesRoot := filepath.Join(cleanHome, ".lore")
 	dataRoot := filepath.Join(cleanHome, ".local", "share", "lore")
 
 	config := Config{
-		ConfigRoot:            filepath.Join(cleanHome, ".config", "lore"),
-		FilesRoot:             filesRoot,
-		JournalRoot:           filepath.Join(filesRoot, "events"),
-		PendingPath:           filepath.Join(filesRoot, "pending.json"),
-		VerificationStatePath: filepath.Join(filesRoot, "verification.json"),
+		ConfigRoot: filepath.Join(cleanHome, ".config", "lore"),
 	}
 	config.setDataRoot(dataRoot)
 

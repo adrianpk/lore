@@ -18,7 +18,7 @@ const (
 	// ProtocolVersion identifies the initial local IPC protocol.
 	ProtocolVersion = "lore/v1"
 	// MaxRequestSize is the largest accepted encoded request.
-	MaxRequestSize = 64 << 10
+	MaxRequestSize = 1 << 20
 	// MaxResponseSize is the largest accepted encoded response.
 	MaxResponseSize = 8 << 20
 
@@ -35,10 +35,10 @@ const (
 	ErrorUnsupportedProtocol ErrorCode = "unsupported_protocol"
 	// ErrorUnknownOperation indicates an unsupported operation name.
 	ErrorUnknownOperation ErrorCode = "unknown_operation"
-	// ErrorNotFound indicates that no requested event exists.
+	// ErrorNotFound indicates that no requested entry exists.
 	ErrorNotFound ErrorCode = "not_found"
-	// ErrorInvalidEvent indicates an event contract violation.
-	ErrorInvalidEvent ErrorCode = "invalid_event"
+	// ErrorInvalidEntry indicates an entry contract violation.
+	ErrorInvalidEntry ErrorCode = "invalid_entry"
 	// ErrorJournalCorrupt indicates invalid canonical journal state.
 	ErrorJournalCorrupt ErrorCode = "journal_corrupt"
 	// ErrorJournalUnavailable indicates inaccessible journal storage.

@@ -1,4 +1,4 @@
-// Command lore runs the local chronicle client and service.
+// Command lore runs the local knowledge client and service.
 package main
 
 import (

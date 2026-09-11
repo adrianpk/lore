@@ -1,5 +1,5 @@
 [Unit]
-Description=Verify the Lore local chronicle
+Description=Verify the Lore local knowledge store
 Requires=lore.socket
 After=lore.socket
 

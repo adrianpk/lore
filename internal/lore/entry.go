@@ -63,6 +63,18 @@ const (
 	EntryReferenceTypeCommit EntryReferenceType = "commit"
 )
 
+// ProvenanceType identifies the semantic source of a knowledge entry.
+type ProvenanceType string
+
+const (
+	// ProvenanceTypeHuman identifies human-supplied content.
+	ProvenanceTypeHuman ProvenanceType = "human"
+	// ProvenanceTypeAgent identifies agent-supplied content.
+	ProvenanceTypeAgent ProvenanceType = "agent"
+	// ProvenanceTypeIntegration identifies integration-supplied content.
+	ProvenanceTypeIntegration ProvenanceType = "integration"
+)
+
 // Entry is one complete canonical knowledge revision.
 type Entry struct {
 	ID             EntryID          `json:"id"`

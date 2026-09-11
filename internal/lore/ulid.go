@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"math/big"
-	"strings"
 	"time"
 )
 
@@ -14,14 +13,11 @@ const crockfordBase32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
 var base32Radix = big.NewInt(32)
 
-// EventID is a canonical ULID string.
-type EventID string
-
-// NewEventID generates a ULID for the supplied UTC recording time.
-func NewEventID(recordedAt time.Time, entropy io.Reader) (EventID, error) {
+// NewEntryID generates a ULID for the supplied UTC recording time.
+func NewEntryID(recordedAt time.Time, entropy io.Reader) (EntryID, error) {
 	milliseconds := recordedAt.UnixMilli()
 	if milliseconds < 0 || milliseconds > (1<<48)-1 {
-		return "", fmt.Errorf("generate event ID: timestamp is outside the ULID range")
+		return "", fmt.Errorf("generate entry ID: timestamp is outside the ULID range")
 	}
 
 	if entropy == nil {
@@ -36,43 +32,10 @@ func NewEventID(recordedAt time.Time, entropy io.Reader) (EventID, error) {
 	copy(data[:6], timestamp[2:])
 
 	if _, err := io.ReadFull(entropy, data[6:]); err != nil {
-		return "", fmt.Errorf("generate event ID entropy: %w", err)
+		return "", fmt.Errorf("generate entry ID entropy: %w", err)
 	}
 
-	return EventID(encodeULID(data)), nil
-}
-
-// Validate checks the canonical ULID representation.
-func (id EventID) Validate() error {
-	value := string(id)
-	if len(value) != 26 {
-		return fmt.Errorf("ULID must contain 26 characters")
-	}
-
-	if value[0] > '7' {
-		return fmt.Errorf("ULID exceeds 128 bits")
-	}
-
-	for _, character := range value {
-		if !strings.ContainsRune(crockfordBase32, character) {
-			return fmt.Errorf("ULID contains invalid character %q", character)
-		}
-	}
-
-	return nil
-}
-
-func (id EventID) timestampMilliseconds() (int64, error) {
-	if err := id.Validate(); err != nil {
-		return 0, err
-	}
-
-	var milliseconds uint64
-	for _, character := range string(id)[:10] {
-		milliseconds = milliseconds*32 + uint64(strings.IndexRune(crockfordBase32, character))
-	}
-
-	return int64(milliseconds), nil
+	return EntryID(encodeULID(data)), nil
 }
 
 func encodeULID(data [16]byte) string {

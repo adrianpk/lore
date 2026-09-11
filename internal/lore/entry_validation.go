@@ -260,10 +260,31 @@ func (referenceType EntryReferenceType) Valid() bool {
 	}
 }
 
+// Valid reports whether the provenance type is canonical.
+func (provenanceType ProvenanceType) Valid() bool {
+	switch provenanceType {
+	case ProvenanceTypeHuman, ProvenanceTypeAgent, ProvenanceTypeIntegration:
+		return true
+	default:
+		return false
+	}
+}
+
 // Validate checks the canonical ULID representation of an entry ID.
 func (id EntryID) Validate() error {
-	if err := EventID(id).Validate(); err != nil {
-		return fmt.Errorf("validate entry ID: %w", err)
+	value := string(id)
+	if len(value) != 26 {
+		return fmt.Errorf("validate entry ID: ULID must contain 26 characters")
+	}
+
+	if value[0] > '7' {
+		return fmt.Errorf("validate entry ID: ULID exceeds 128 bits")
+	}
+
+	for _, character := range value {
+		if !strings.ContainsRune(crockfordBase32, character) {
+			return fmt.Errorf("validate entry ID: ULID contains invalid character %q", character)
+		}
 	}
 
 	return nil
@@ -533,6 +554,29 @@ func validateEntryBody(value string) error {
 	}
 
 	return nil
+}
+
+func validateUTCTime(name string, value time.Time) error {
+	if value.IsZero() {
+		return fmt.Errorf("validate entry: %s is required", name)
+	}
+
+	_, offset := value.Zone()
+	if offset != 0 {
+		return fmt.Errorf("validate entry: %s must use UTC", name)
+	}
+
+	return nil
+}
+
+func containsControl(value string) bool {
+	for _, character := range value {
+		if unicode.IsControl(character) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func validateBoundedSingleLine(name, value string, required bool, maxBytes, maxRunes int) error {

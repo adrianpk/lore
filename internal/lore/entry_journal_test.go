@@ -382,12 +382,12 @@ func distinctKnowledgeEntry(t *testing.T, sequence int) Entry {
 	entropy[8] = byte(sequence >> 8)
 	entropy[9] = byte(sequence)
 
-	id, err := NewEventID(entry.RecordedAt, bytes.NewReader(entropy))
+	id, err := NewEntryID(entry.RecordedAt, bytes.NewReader(entropy))
 	if err != nil {
-		t.Fatalf("NewEventID() error = %v", err)
+		t.Fatalf("NewEntryID() error = %v", err)
 	}
 
-	entry.ID = EntryID(id)
+	entry.ID = id
 
 	return entry
 }

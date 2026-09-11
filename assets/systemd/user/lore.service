@@ -1,5 +1,5 @@
 [Unit]
-Description=Lore local chronicle service
+Description=Lore local knowledge service
 Requires=lore.socket
 After=lore.socket
 

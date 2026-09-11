@@ -1,5 +1,5 @@
 [Unit]
-Description=Verify the Lore local chronicle each day
+Description=Verify the Lore local knowledge store each day
 
 [Timer]
 OnCalendar=*-*-* 03:00:00

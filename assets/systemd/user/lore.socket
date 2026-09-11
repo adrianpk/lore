@@ -1,5 +1,5 @@
 [Unit]
-Description=Lore local chronicle socket
+Description=Lore local knowledge socket
 
 [Socket]
 ListenStream=%t/lore/lore.sock
