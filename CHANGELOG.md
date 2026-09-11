@@ -6,6 +6,8 @@ This project uses Semantic Versioning.
 
 ## Unreleased
 
+## 0.1.0 - 2026-09-11
+
 ### Added
 
 - Typed `procedure`, `fact`, `warning`, and `reference` knowledge entries.
@@ -16,5 +18,6 @@ This project uses Semantic Versioning.
 
 ### Changed
 
-- Replaced the inherited baseline documentation with Lore knowledge workflows,
-  command reference, storage contracts, and explicit agent-integration policy.
+- Documentation now provides guided installation, an explicit-first agent
+  policy, complete command and storage reference, and review and pruning
+  workflows.
