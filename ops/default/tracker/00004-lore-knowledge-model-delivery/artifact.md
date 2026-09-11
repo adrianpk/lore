@@ -12,7 +12,7 @@ Base branch: `dev`
 
 Active slice: Slice 4
 
-Active tasks: T4.1
+Active tasks: none
 
 Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
@@ -23,7 +23,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | delivered | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | `#2` | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | delivered | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | `#3` | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
-| Slice 4 | review and pruning | ready | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
+| Slice 4 | review and pruning | ready for review | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
 ## Slice 1 Tasks
 
@@ -54,10 +54,10 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Task | Status | Expected Commit | Commit | Validation |
 | --- | --- | --- | --- | --- |
-| T4.1 | ready | `feat(review): select pruning candidates` | pending | pending |
-| T4.2 | blocked | `feat(store): purge confirmed entry chains` | pending | pending |
-| T4.3 | blocked | `docs(lore): document knowledge workflows` | pending | pending |
-| T4.4 | blocked | `test(acceptance): verify Lore knowledge workflows` | pending | pending |
+| T4.1 | completed | `feat(review): select pruning candidates` | `e7bd347` | objective filters, duplicate-title grouping, limits, and read-only behavior passed |
+| T4.2 | completed | `feat(store): purge confirmed entry chains` | `2c138bc` | chain selection, store-bound confirmation, atomic rewrite, recovery, and reload passed |
+| T4.3 | completed | `docs(lore): document knowledge workflows` | `2dd32ac` | Diataxis structure, local links, package README, and `make docs-check` passed |
+| T4.4 | completed | `test(acceptance): verify Lore knowledge workflows` | `1cab38a` | all entry kinds, Unix service, lifecycle, review, purge, restart, and systemd assets passed |
 
 ## Completion Gates
 
@@ -71,7 +71,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 - [x] Slice 3 delivered and merged into `dev`.
 - [ ] Slice 4 delivered and merged into `dev`.
 - [x] Inherited activity domain removed.
-- [ ] Global activation remains deferred pending separate authorization.
+- [x] Global activation remains deferred pending separate authorization.
 - [ ] Canonical cycle report delivered.
 
 ## Notes
@@ -106,3 +106,8 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
   commit `9a24e75`.
 - Slice 4 completes pruning and documentation; global agent configuration is
   not part of that documentation change.
+- Slice 4 review is objective and read-only; confirmed purge selects complete
+  chains and invalidates its token after any store change.
+- Slice 4 documentation now describes Lore capture, retrieval, lifecycle,
+  review, pruning, storage, and explicit-first agent integration without
+  activating a global policy.
