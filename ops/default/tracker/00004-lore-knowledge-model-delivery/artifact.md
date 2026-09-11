@@ -23,7 +23,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | delivered | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | `#2` | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
 | Slice 3 | knowledge workflows | delivered | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | `#3` | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
-| Slice 4 | review and pruning | ready for review | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
+| Slice 4 | review and pruning | ready for merge | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | `#4` | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
 ## Slice 1 Tasks
 
@@ -111,3 +111,5 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 - Slice 4 documentation now describes Lore capture, retrieval, lifecycle,
   review, pruning, storage, and explicit-first agent integration without
   activating a global policy.
+- Slice 4 was published as conflict-free PR `#4` against `dev` after all
+  required validation passed.
