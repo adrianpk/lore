@@ -1,4 +1,4 @@
-// Package lore implements the local Lore journal and its domain contracts.
+// Package lore implements the local Lore knowledge store and its contracts.
 package lore
 
 import (

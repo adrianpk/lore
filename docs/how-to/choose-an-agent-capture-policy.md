@@ -1,62 +1,38 @@
 # Choose an Agent Capture Policy
 
-Define the capture policy in each workspace `AGENTS.md`. Different workspaces
-can use different commit granularity. Direct user instructions can separately
-authorize non-Git activity records.
+Keep retrieval and capture as separate policy decisions. Retrieval is
+read-only; capture changes the durable knowledge store.
 
-## Use a selective commit policy
+## Start with explicit capture
 
-Use this policy when the journal should contain only important completed Git
-outcomes:
+Use this policy first:
 
 ```md
-After creating a significant commit, immediately run `lore record commit [flags] [summary]` while that commit is still `HEAD`.
-Record completed delivery outcomes, reusable decisions, accepted specifications, and non-obvious fixes.
-Use the summary when the commit subject does not explain why the outcome matters.
-Supply provenance only when its values are known reliably.
-Do not record routine, mechanical, generated, formatting-only, punctuation-only, or work-in-progress commits.
-Never include credentials, tokens, personal data, or hidden reasoning in the summary.
+Query Lore when applicable stored knowledge could avoid a costly repeated inference.
+Record knowledge only when the user explicitly asks. Curate the reusable result into one fact, procedure, warning, or reference.
+Do not preserve the conversation, hidden reasoning, credentials, tokens, or personal data.
 ```
 
-This policy makes commit records sparse. A missing commit event does not mean
-that no work occurred.
+An explicit request already authorizes the record. Do not interrupt the active
+workflow with another approval prompt.
 
-## Use a broad commit policy
+## Select only useful context
 
-Use this policy when commit recall is more important than a small journal:
+Use `project:<name>` for the short canonical project identity. Prefer the
+lowercase canonicalized directory name. Add `repository:<name>@<identity>`
+when repository identity changes applicability. Use `system`, `host`,
+`technology`, or `client` only when that dimension matters.
 
-```md
-After every completed intentional commit, immediately run `lore record commit [flags] [summary]` while that commit is still `HEAD`.
-Include features, fixes, refactors, documentation, tests, maintenance, and small deliberate changes.
-Use the summary only when the commit subject does not explain the purpose or likely retrieval terms.
-Supply provenance only when its values are known reliably.
-Do not record generated-only, temporary, work-in-progress, or abandoned commits.
-Never include credentials, tokens, personal data, or hidden reasoning in the summary.
-```
+Labels are optional topical hints. Keep them sparse because contexts provide
+the stable structural dimensions.
 
-This policy produces denser commit counts. Compare counts only when capture
-policies are sufficiently similar.
+## Consider autonomous capture later
 
-## Define user-directed non-Git capture
+Autonomous capture should be a deliberate workspace opt-in. Its policy must
+require high-value, reusable knowledge such as a non-obvious recovery
+procedure, hard constraint, recurring failure mode, or expensive discovery.
+It should exclude routine commands, transient state, obvious documentation,
+and progress narration.
 
-Use a separate rule for activity that is not represented by a commit:
-
-```md
-When the user explicitly asks to preserve completed non-Git work, use `lore record worklog` when they provide a duration or `lore record note` for fallback information.
-Record only the requested fact and context. This instruction does not authorize automatic conversation capture.
-Never infer duration, scope, references, or provenance that the user did not supply or approve.
-```
-
-A `worklog` is suitable for configuration, investigation, coordination,
-research, maintenance, or another task with explicit minutes. A `note` is the
-fallback for user-directed information that has no more specific event type.
-Neither requires a repository.
-
-## Supply provenance carefully
-
-Use `--source human` when an agent transports content explicitly supplied by
-the user. Use `--source agent --harness <name>` for agent-authored records only
-when the provenance is reliable. Harness version and model require a harness.
-
-Do not guess provenance or place tool transcripts, prompts, hidden reasoning,
-credentials, tokens, or personal data in summaries or references.
+Review store growth and false positives before broadening the policy. The
+current recommended configuration remains explicit capture.

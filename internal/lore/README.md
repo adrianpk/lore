@@ -1,7 +1,7 @@
 # Lore Core
 
 This package owns Lore's knowledge-entry model, validation, repository
-identity normalization, monthly journal storage, and local recovery behavior.
+identity normalization, monthly entry storage, and local recovery behavior.
 
 `entry.go` defines the canonical entry, context, reference, provenance, and
 lifecycle value contracts. `entry_validation.go` owns normalization and local

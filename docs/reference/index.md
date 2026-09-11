@@ -1,6 +1,6 @@
 # Reference
 
-- [Command line](command-line.md) defines every current command, option, and
-  range rule.
-- [Storage and event data](storage-and-event-data.md) defines local paths,
-  stored fields, privacy boundaries, and file behavior.
+- [Command line](command-line.md) defines every current command, selector, and
+  bound.
+- [Storage and entry data](storage-and-entry-data.md) defines local paths,
+  canonical fields, lifecycle behavior, and privacy boundaries.

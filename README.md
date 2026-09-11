@@ -25,10 +25,11 @@ Lore helps humans and agents:
 
 Knowledge can enter Lore through two complementary paths.
 
-An agent may curate a reusable result after discovering something costly or
-non-obvious when the applicable `AGENTS.md` policy authorizes autonomous
-capture. A human may also explicitly ask an agent to preserve a fact,
-procedure, warning, or other useful result.
+The initial capture policy is explicit: a human asks an agent to preserve a
+fact, procedure, warning, or reference. The agent curates the reusable result
+and records it without preserving the surrounding conversation. Autonomous
+capture can be authorized later by workspace policy, but it is not the
+recommended starting mode.
 
 Capture retains the knowledge itself rather than the conversation that
 produced it. Entries can include a concise title, curated content, applicable
@@ -56,13 +57,10 @@ deletion remains an explicit administrative action.
 
 ## Agent integration
 
-Lore integrates through repository and global agent policies. A policy can
-require retrieval before repeated inference, authorize bounded autonomous
-capture, and define when human approval is required.
-
-Global integration remains inactive until Lore's knowledge contracts and
-commands are implemented and verified. Workspace policy must not refer to
-commands the installed application cannot execute.
+Lore integrates through repository and global agent policies. A workspace can
+allow retrieval when stored know-how may reduce repeated inference while
+keeping capture limited to explicit user requests. Autonomous capture remains
+a separate, opt-in policy decision.
 
 ## Boundaries
 
@@ -78,10 +76,10 @@ destruction.
 
 ## Development status
 
-Lore is in early development. Its intended shape is a local Go CLI and
-per-user service backed by bounded, append-only JSONL storage. The knowledge
-schema, command surface, retrieval behavior, and pruning workflow are being
-defined before global agent activation.
+Lore implements its initial local Go CLI and per-user service. It supports
+typed capture, contextual search, complete revision chains, lifecycle changes,
+objective review, confirmed whole-chain purge, and storage verification over
+bounded monthly JSONL segments.
 
-The current implementation is a technical foundation under conversion. Its
-existing command and data contracts are not yet the public Lore interface.
+Repository documentation describes optional workspace integration, but no
+global agent policy is installed or activated by this repository.

@@ -65,5 +65,6 @@ systemctl --user is-active lore.socket lore-verify.timer
 
 Both units should report `active`. The service starts on the first client
 request. The timer runs verification at 03:00 in the machine's local timezone.
+This activates the local service only; it does not change any agent policy.
 
 Continue with [Connect a workspace agent](02-connect-a-workspace-agent.md).
