@@ -1,6 +1,6 @@
 # Slice 2: Revision-Aware Journal
 
-Status: ready for merge
+Status: delivered
 
 Delivery set: `lore-knowledge-model`
 
