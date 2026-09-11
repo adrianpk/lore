@@ -49,8 +49,16 @@ func (service *Service) Handle(ctx context.Context, request Request) Response {
 	case "verify":
 		return service.handleVerify(request.Params)
 	default:
-		return ErrorResponse(ErrorUnknownOperation, "unknown operation")
+		return service.handleMaintenance(request)
 	}
+}
+
+func (service *Service) handleMaintenance(request Request) Response {
+	if request.Operation == "review" {
+		return service.handleReview(request.Params)
+	}
+
+	return ErrorResponse(ErrorUnknownOperation, "unknown operation")
 }
 
 func (service *Service) handleRecord(ctx context.Context, encoded json.RawMessage) Response {
@@ -102,6 +110,20 @@ func (service *Service) handleSearch(encoded json.RawMessage) Response {
 	}
 
 	result, err := service.journal.SearchEntries(params)
+	if err != nil {
+		return entryErrorResponse(err)
+	}
+
+	return SuccessResponse(result)
+}
+
+func (service *Service) handleReview(encoded json.RawMessage) Response {
+	var params ReviewParams
+	if err := decodeOperationParams(encoded, &params); err != nil {
+		return ErrorResponse(ErrorInvalidRequest, "decode review params")
+	}
+
+	result, err := service.journal.Review(params)
 	if err != nil {
 		return entryErrorResponse(err)
 	}
