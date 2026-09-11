@@ -12,7 +12,7 @@ Base branch: `dev`
 
 Active slice: Slice 3
 
-Active tasks: T3.1
+Active tasks: none
 
 Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
@@ -22,7 +22,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 | --- | --- | --- | --- | --- | --- | --- |
 | Slice 1 | entry model foundation | delivered | `feat/slice-1-entry-model-foundation` | `feat(slice-1): establish Lore entry model` | `#1` | `ops/default/report/slices/lore-knowledge-model/slice-1-entry-model-foundation.md` |
 | Slice 2 | revision-aware journal | delivered | `feat/slice-2-revision-aware-journal` | `feat(slice-2): persist revision-aware Lore entries` | `#2` | `ops/default/report/slices/lore-knowledge-model/slice-2-revision-aware-journal.md` |
-| Slice 3 | knowledge workflows | ready | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | pending | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
+| Slice 3 | knowledge workflows | ready for review | `feat/slice-3-knowledge-workflows` | `feat(slice-3): deliver Lore knowledge workflows` | pending | `ops/default/report/slices/lore-knowledge-model/slice-3-knowledge-workflows.md` |
 | Slice 4 | review and pruning | blocked | `feat/slice-4-review-pruning` | `feat(slice-4): deliver Lore review and pruning` | pending | `ops/default/report/slices/lore-knowledge-model/slice-4-review-pruning.md` |
 
 ## Slice 1 Tasks
@@ -45,10 +45,10 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 
 | Task | Status | Expected Commit | Commit | Validation |
 | --- | --- | --- | --- | --- |
-| T3.1 | ready | `feat(cli): record Lore knowledge` | pending | pending |
-| T3.2 | blocked | `feat(cli): manage Lore entry lifecycle` | pending | pending |
-| T3.3 | blocked | `feat(cli): retrieve Lore knowledge` | pending | pending |
-| T3.4 | blocked | `refactor(core): remove activity journal model` | pending | pending |
+| T3.1 | completed | `feat(cli): record Lore knowledge` | `0b21c90` | record flags, JSON input, body files, project inference, and service capture passed |
+| T3.2 | completed | `feat(cli): manage Lore entry lifecycle` | `0b21c90` | complete revisions, lifecycle transitions, inheritance, and stale-target coverage passed |
+| T3.3 | completed | `feat(cli): retrieve Lore knowledge` | `0b21c90` | show, history, combined search filters, ordering, limits, and JSON output passed |
+| T3.4 | completed | `refactor(core): remove activity journal model` | `0b21c90` | all Slice 3 gates passed with the activity surface absent |
 
 ## Slice 4 Tasks
 
@@ -70,7 +70,7 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
 - [x] Slice 2 delivered and merged into `dev`.
 - [ ] Slice 3 delivered and merged into `dev`.
 - [ ] Slice 4 delivered and merged into `dev`.
-- [ ] Inherited activity domain removed.
+- [x] Inherited activity domain removed.
 - [ ] Global activation remains deferred pending separate authorization.
 - [ ] Canonical cycle report delivered.
 
@@ -98,5 +98,8 @@ Execution gate: fulfilled by the user's explicit authorization on 2026-09-10
   expose a partial user-facing cutover.
 - Slice 3 is the single cutover point and must remove the inherited activity
   domain rather than leave a parallel ledger.
+- Slice 3 uses one atomic implementation commit because the command cutover
+  and inherited-domain removal are not independently buildable without
+  exposing incompatible product contracts.
 - Slice 4 completes pruning and documentation; global agent configuration is
   not part of that documentation change.

@@ -5,9 +5,9 @@
   "namespace": "default",
   "title": "Lore Knowledge Model Delivery Tracker",
   "status": "active",
-  "revision": 8,
+  "revision": 9,
   "created_at": "2026-09-10T21:23:27Z",
-  "updated_at": "2026-09-11T05:23:39Z",
+  "updated_at": "2026-09-11T05:50:57Z",
   "producer": {
     "name": "codex",
     "version": "1"
