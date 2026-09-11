@@ -53,7 +53,15 @@ func (journal *EntryJournal) Load(ctx context.Context) error {
 		return err
 	}
 
-	if err := prepareEntryDirectories(journal.config); err != nil {
+	if err := prepareEntryBaseDirectories(journal.config); err != nil {
+		return err
+	}
+
+	if err := recoverEntryPurge(journal.config); err != nil {
+		return err
+	}
+
+	if err := prepareEntrySegmentDirectory(journal.config.EntriesRoot); err != nil {
 		return err
 	}
 
@@ -215,8 +223,8 @@ func (journal *EntryJournal) recoverForAppend(ctx context.Context) error {
 	return nil
 }
 
-func prepareEntryDirectories(config Config) error {
-	for _, directory := range []string{config.DataRoot, config.EntriesRoot, config.EntryPendingRoot} {
+func prepareEntryBaseDirectories(config Config) error {
+	for _, directory := range []string{config.DataRoot, config.EntryPendingRoot} {
 		if directory == "" {
 			return fmt.Errorf("prepare entry journal: configured path is empty")
 		}
@@ -228,6 +236,30 @@ func prepareEntryDirectories(config Config) error {
 		if err := os.Chmod(directory, 0o700); err != nil {
 			return fmt.Errorf("set entry directory permissions %q: %w", directory, err)
 		}
+	}
+
+	return nil
+}
+
+func prepareEntryDirectories(config Config) error {
+	if err := prepareEntryBaseDirectories(config); err != nil {
+		return err
+	}
+
+	return prepareEntrySegmentDirectory(config.EntriesRoot)
+}
+
+func prepareEntrySegmentDirectory(directory string) error {
+	if directory == "" {
+		return fmt.Errorf("prepare entry journal: configured path is empty")
+	}
+
+	if err := os.MkdirAll(directory, 0o700); err != nil {
+		return fmt.Errorf("prepare entry directory %q: %w", directory, err)
+	}
+
+	if err := os.Chmod(directory, 0o700); err != nil {
+		return fmt.Errorf("set entry directory permissions %q: %w", directory, err)
 	}
 
 	return nil

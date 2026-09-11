@@ -49,16 +49,33 @@ func (service *Service) Handle(ctx context.Context, request Request) Response {
 	case "verify":
 		return service.handleVerify(request.Params)
 	default:
-		return service.handleMaintenance(request)
+		return service.handleMaintenance(ctx, request)
 	}
 }
 
-func (service *Service) handleMaintenance(request Request) Response {
-	if request.Operation == "review" {
+func (service *Service) handleMaintenance(ctx context.Context, request Request) Response {
+	switch request.Operation {
+	case "purge":
+		return service.handlePurge(ctx, request)
+	case "review":
 		return service.handleReview(request.Params)
+	default:
+		return ErrorResponse(ErrorUnknownOperation, "unknown operation")
+	}
+}
+
+func (service *Service) handlePurge(ctx context.Context, request Request) Response {
+	var params PurgeParams
+	if err := decodeOperationParams(request.Params, &params); err != nil {
+		return ErrorResponse(ErrorInvalidRequest, "decode purge params")
 	}
 
-	return ErrorResponse(ErrorUnknownOperation, "unknown operation")
+	result, err := service.journal.Purge(ctx, params)
+	if err != nil {
+		return entryErrorResponse(err)
+	}
+
+	return SuccessResponse(result)
 }
 
 func (service *Service) handleRecord(ctx context.Context, encoded json.RawMessage) Response {

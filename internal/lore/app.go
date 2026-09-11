@@ -32,7 +32,7 @@ func NewApp(config Config, stdout, stderr io.Writer) *App {
 // Run executes one CLI command.
 func (app *App) Run(ctx context.Context, arguments []string) error {
 	if len(arguments) == 0 {
-		return fmt.Errorf("usage: lore <archive|invalidate|record|restore|review|revise|search|serve|show|verify>")
+		return fmt.Errorf("usage: lore <archive|invalidate|purge|record|restore|review|revise|search|serve|show|verify>")
 	}
 
 	switch arguments[0] {
@@ -56,11 +56,14 @@ func (app *App) Run(ctx context.Context, arguments []string) error {
 }
 
 func (app *App) runMaintenanceCommand(ctx context.Context, arguments []string) error {
-	if arguments[0] == "review" {
+	switch arguments[0] {
+	case "purge":
+		return app.runPurge(ctx, arguments[1:])
+	case "review":
 		return app.runReview(ctx, arguments[1:])
+	default:
+		return fmt.Errorf("unknown command %q", arguments[0])
 	}
-
-	return fmt.Errorf("unknown command %q", arguments[0])
 }
 
 func (app *App) runServe(ctx context.Context, arguments []string) error {
