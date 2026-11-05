@@ -19,7 +19,7 @@
     },
     {
       "type": "host",
-      "name": "zeus"
+      "name": "workstation"
     }
   ],
   "labels": ["recovery", "service"],

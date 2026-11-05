@@ -37,7 +37,7 @@ func TestSearchEntriesCombinesFilters(t *testing.T) {
 	match.Body = "Inspect the service."
 	match.Contexts = []Context{
 		{Type: ContextTypeProject, Name: "lore"},
-		{Type: ContextTypeHost, Name: "zeus"},
+		{Type: ContextTypeHost, Name: "workstation"},
 	}
 	match.Labels = []string{"recovery", "service"}
 
@@ -50,7 +50,7 @@ func TestSearchEntriesCombinesFilters(t *testing.T) {
 	result, err := journal.SearchEntries(SearchEntriesParams{
 		Text:     "CACHE",
 		Kinds:    []EntryKind{EntryKindProcedure, EntryKindWarning},
-		Contexts: []Context{{Type: ContextTypeProject, Name: "Lore"}, {Type: ContextTypeHost, Name: "zeus"}},
+		Contexts: []Context{{Type: ContextTypeProject, Name: "Lore"}, {Type: ContextTypeHost, Name: "workstation"}},
 		Labels:   []string{"recovery", "unrelated"},
 	})
 	if err != nil {

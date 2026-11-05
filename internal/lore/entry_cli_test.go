@@ -119,7 +119,7 @@ func TestSearchEntriesFlagsUseRepeatableFilters(t *testing.T) {
 		"--kind", "warning",
 		"--status", "active",
 		"--context", "project:Lore",
-		"--context", "host:Zeus",
+		"--context", "host:Workstation",
 		"--label", "Service Recovery",
 		"--order", "ascending",
 		"--limit", "5",
@@ -153,7 +153,7 @@ func TestRecordEntryInfersProjectContext(t *testing.T) {
 		t.Fatalf("context name = %q", contextValue.Name)
 	}
 
-	if contextValue.Repository != "zeus:2222/adrianpk/lore" {
+	if contextValue.Repository != "forge.example:2222/example/lore" {
 		t.Fatalf("repository identity = %q", contextValue.Repository)
 	}
 }
@@ -225,7 +225,7 @@ func initializeKnowledgeRepository(t *testing.T, directoryName string) string {
 	}
 
 	runKnowledgeGit(t, root, "init", "-q")
-	runKnowledgeGit(t, root, "remote", "add", "origin", "ssh://forge@Zeus:2222/adrianpk/lore.git")
+	runKnowledgeGit(t, root, "remote", "add", "origin", "ssh://git@Forge.Example:2222/example/lore.git")
 
 	return root
 }

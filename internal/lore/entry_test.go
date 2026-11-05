@@ -354,7 +354,7 @@ func validKnowledgeEntry() Entry {
 		VerifiedAt: &verifiedAt,
 		Contexts: []Context{
 			{Type: ContextTypeProject, Name: "lore", Repository: "forge.example/adrian/lore"},
-			{Type: ContextTypeHost, Name: "zeus"},
+			{Type: ContextTypeHost, Name: "workstation"},
 		},
 		Labels: []string{"recovery", "service"},
 		References: []EntryReference{
